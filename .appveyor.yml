@@ -1,49 +1,57 @@
-image: Visual Studio 2015   # на этом VM-образе установлены все Visual Studio с 2008 по 2015
-
-init:
-    # секция инициализации, исполняется до клонирования проекта
-    # скорее всего, строчка ниже необязательна (так должно быть по умолчанию),
-    # вместе с тем, она присутствует в официальных примерах, так что пусть будет:
-    - git config --global core.autocrlf input
-
-clone_folder: c:\projects\my-prj # выбираем локальную директорию для клонирования
-shallow_clone: true              # копируем только последний коммит, без истории (git clone --depth 1)
-
-matrix:
-    fast_finish: false           # не останавливаемся после возникновения ошибки в каком-то из заданий
-
-platform:
-    # будем гонять CI на amd64 и x86...
-    - x64
-    - x86
-
-configuration:
-    # ... и в дебажной, и в релизной конфигурациях ...
-    - Debug
-    - Release
+version: build{build}
 
 environment:
-    matrix:
-        # ... на трёх студиях (2010, 2012, 2015)
-        - TOOLCHAIN: msvc10
-        - TOOLCHAIN: msvc12
-        - TOOLCHAIN: msvc14
+  matrix:
+  - example: simple-player
+    name: win32
+    platform: amd64_x86
+    qt: msvc2013
+  - example: simple-player
+    name: win64
+    platform: amd64
+    qt: msvc2013_64
+  - example: simple-player
+    name: win32
+    platform: mingw
+    qt: mingw492_32
 
-install:
-    # скрипт настройки среды и установки зависимостей:
-    - call set-env.bat %TOOLCHAIN% %PLATFORM%
+  - example: qml-player
+    name: win32
+    platform: amd64_x86
+    qt: msvc2013
+  - example: qml-player
+    name: win64
+    platform: amd64
+    qt: msvc2013_64
+  - example: qml-player
+    name: win32
+    platform: mingw
+    qt: mingw492_32
+
+clone_folder: c:\lab
+clone_depth: 5
+
+init:
+  - set ORIGPATH=%PATH%
+  - if not %platform%==mingw call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" %platform%
+  - if not %platform%==mingw (set makefiles="NMake Makefiles") else (set makefiles="MinGW Makefiles")
 
 build_script:
-    # скрипт сборки проекта:
-    - mkdir build
-    - cd build
-    - cmake .. %CMAKE_CONFIGURE_FLAGS%
-    - cmake --build . %CMAKE_BUILD_FLAGS%
+  - if %platform%==mingw set PATH=C:\Qt\5.5\%qt%\bin;C:\dev\dependencies\vlc-qt\bin;C:\Qt\Tools\mingw492_32\bin;C:\Program Files (x86)\CMake\bin
+  - cd build
+  - cmake ..\%example% -G %makefiles% -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="c:/dev/install"
+  - if not %platform%==mingw (nmake) else (mingw32-make)
+  - if not %platform%==mingw (nmake install) else (mingw32-make install)
+  - if not %platform%==mingw (nmake windows) else (mingw32-make windows)
+  - if %platform%==mingw set PATH=%ORIGPATH%
 
-test_script:
-    # скрипт тестирования проекта:
-    - ctest -C %CONFIGURATION% --output-on-failure
+test: off
 
-artifacts:
-    - path: <local-package-path>
-      name: package_name
+# test_script:
+#   - cd c:\dev\install
+#   - start /wait %example%.exe test
+#   - cd c:\dev\examples
+
+matrix:
+  fast_finish: true
+  
