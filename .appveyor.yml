@@ -37,9 +37,8 @@ init:
   - if not %platform%==mingw (set makefiles="NMake Makefiles") else (set makefiles="MinGW Makefiles")
 
 build_script:
-  - if %platform%==mingw set PATH=C:\Qt\5.5\%qt%\bin;C:\dev\dependencies\vlc-qt\bin;C:\Qt\Tools\mingw492_32\bin;C:\Program Files (x86)\CMake\bin
   - cd build
-  - cmake ..\%example% -G %makefiles% -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="c:/dev/install"
+  - cmake ..\%example% -G %makefiles% -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="c:/lab/install"
   - if not %platform%==mingw (nmake) else (mingw32-make)
   - if not %platform%==mingw (nmake install) else (mingw32-make install)
   - if not %platform%==mingw (nmake windows) else (mingw32-make windows)
@@ -54,4 +53,3 @@ test: off
 
 matrix:
   fast_finish: true
-  
