@@ -22,14 +22,14 @@
  */
 int main(void) {
     FILE *f_out;
-    int err = NO_ERR, n = 0, len = 0;
+    int err = NO_ERR, n = 0;
     char str[MAX_STR] = "";
 
     err += set_input(str, &n);
     err += (f_out = fopen(OUTPUT_TXT, "w")) ? NO_ERR : ERR_CREATE;
 
     if ((is_correct(str)) && (!err)) {
-        int i = 0;
+        int i = 0, len = 0;
         while (str[len] != 0)
             len++;
         while ((i < n) && !permutation(str, len) && !err) {
