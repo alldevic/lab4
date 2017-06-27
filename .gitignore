@@ -505,3 +505,5 @@ __pycache__/
 *.xsd.cs
 
 # End of https://www.gitignore.io/api/c,macos,cmake,clion,linux,windows,sublimetext,visualstudio,visualstudiocode
+
+!testLab.exe
