@@ -1,5 +1,7 @@
 # Лабораторная работа №4
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2c5cbbec5f77424a930e1b485ad4db7b)](https://www.codacy.com/app/alldevic/lab4?utm_source=github.com&utm_medium=referral&utm_content=alldevic/lab4&utm_campaign=badger)
+
 Реализовать перечисление перестановок методом Дейкстры.
 
 ## Дано
