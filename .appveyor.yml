@@ -1,0 +1,50 @@
+version: '{build}'
+
+branches:
+    only:
+        - master
+
+skip_tags: true
+
+image: Visual Studio 2015
+
+init: git config --global core.autocrlf input
+
+clone_folder: c:\lab
+
+shallow_clone: true
+
+matrix: 
+    fast_finish: true
+
+build: 
+    parallel: true 
+
+configuration:
+    - Debug
+#    - Release
+
+environment:
+    matrix:
+        - GENERATOR: MinGW Makefiles
+#        - GENERATOR: Visual Studio 10 2010
+#        - GENERATOR: Visual Studio 10 2010 Win64
+#        - GENERATOR: Visual Studio 12 2013
+#        - GENERATOR: Visual Studio 12 2013 Win64
+        - GENERATOR: Visual Studio 14 2015
+#        - GENERATOR: Visual Studio 14 2015 Win64
+
+before_build:
+    - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
+    - set PATH=C:\MinGW\bin;%PATH%
+    - cmake -DCMAKE_BUILD_TYPE=%CONFIGURATION% -G "%GENERATOR%" 
+    - del "c:\Program Files (x86)\MSBuild\14.0\Microsoft.Common.targets\ImportAfter\Xamarin.Common.targets"
+    - del "c:\Program Files (x86)\MSBuild\4.0\Microsoft.Common.targets\ImportAfter\Xamarin.Common.targets"
+
+build_script:
+    - cmake --build . --config %CONFIGURATION%
+
+test_script:
+    - if "%GENERATOR%"=="MinGW Makefiles" mkdir .\%CONFIGURATION%
+    - if "%GENERATOR%"=="MinGW Makefiles" move .\lab.exe .\%CONFIGURATION%\lab.exe
+    - testLab.exe .\%CONFIGURATION%\lab.exe

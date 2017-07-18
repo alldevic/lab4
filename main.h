@@ -52,6 +52,9 @@
 #define ERR_SCAN 4
 
 int set_input(char *str, int *n);
+
 int is_correct(char *str);
+
 void swap(char *str, int i, int j);
+
 int permutation(char *str, int len);

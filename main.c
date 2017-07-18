@@ -1,7 +1,7 @@
-    /**
- * @mainpage Лабораторная работа №2.
- * Перечисление перестановок по алгоритму Дейкстры.
- */
+/**
+* @mainpage Лабораторная работа №2.
+* Перечисление перестановок по алгоритму Дейкстры.
+*/
 
 #include <stdio.h>
 #include "main.h"
@@ -20,21 +20,19 @@
  * системы
  * @return Соответствующий код ошибки
  */
-int main(void)
-{
+int main(void) {
     FILE *f_out;
-    int err = NO_ERR, n = 0, i = 0, len = 0;
+    int err = NO_ERR, n = 0;
     char str[MAX_STR] = "";
 
     err += set_input(str, &n);
     err += (f_out = fopen(OUTPUT_TXT, "w")) ? NO_ERR : ERR_CREATE;
 
-    if ((is_correct(str)) && (!err))
-    {
-        while (str[len]!=0)
+    if ((is_correct(str)) && (!err)) {
+        int i = 0, len = 0;
+        while (str[len] != 0)
             len++;
-        while ((i < n) && !permutation(str, len) && !err)
-        {
+        while ((i < n) && !permutation(str, len) && !err) {
             err += (fprintf(f_out, "%s\n", str) < 0) ? ERR_PRINT : NO_ERR;
             i++;
         }
@@ -54,13 +52,11 @@ int main(void)
  * генерировать, начиная с P.
  * @return Код ошибки
  */
-int set_input(char *str, int *n)
-{
+int set_input(char *str, int *n) {
     FILE *f_in;
     int err = NO_ERR;
 
-    if ((f_in = fopen(INPUT_TXT, "r")) != NULL)
-    {
+    if ((f_in = fopen(INPUT_TXT, "r")) != NULL) {
         err += (fscanf(f_in, "%s\n%i", str, n) < 0) ? ERR_SCAN : NO_ERR;
         fclose(f_in);
     } else
@@ -81,20 +77,17 @@ int set_input(char *str, int *n)
  * @return 1 - перестановка корректна
  * @return 0 - перестановка некорректна
  */
-int is_correct(char *str)
-{
+int is_correct(char *str) {
     int corr = 0, i = 0, len = 0;
     int m[ALPH_LEN] = {0};
 
-    while ((str[len]!=0) && !corr)
-    {
+    while ((str[len] != 0) && !corr) {
         corr += ((str[len] < ALPH[ALPH_LEN - 1]) || (str[len] > ALPH[0]));
         m[str[len] - '0']++;
         len++;
     }
 
-    while ((i < ALPH_LEN) && !corr)
-    {
+    while ((i < ALPH_LEN) && !corr) {
         corr += (m[i] > 1);
         i++;
     }
@@ -108,8 +101,7 @@ int is_correct(char *str)
  * @param str - строка, для которой требуется замена символов
  * @param i, j - позиции заменяемых символов.
  */
-void swap(char *str, int i, int j)
-{
+void swap(char *str, int i, int j) {
     str[i] = str[i] + str[j];
     str[j] = str[i] - str[j];
     str[i] = str[i] - str[j];
@@ -133,15 +125,13 @@ void swap(char *str, int i, int j)
  * @return 1 - заданная перестановка P является наибольшей
  * @return 0 - перестановка P + 1 успешно сгенерирована
  */
-int permutation(char *str, int len)
-{
+int permutation(char *str, int len) {
     int i = len - 2, j = 0, k = 0;
 
     while (i >= 0 && str[i] >= str[i + 1])
         i--;
 
-    if (i >= 0)
-    {
+    if (i >= 0) {
         j = i + 1;
         while (str[i] < str[j + 1])
             j++;
