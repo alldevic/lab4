@@ -1,23 +1,21 @@
-version: '{build}'
+version: "{build}"
+skip_tags: true
+image: Visual Studio 2015
+init: git config --global core.autocrlf input
+clone_folder: c:\lab
+shallow_clone: true
 
-branches:
+branches: 
     only:
         - master
 
-skip_tags: true
+only_commits:
+    message: /CI/
 
-image: Visual Studio 2015
-
-init: git config --global core.autocrlf input
-
-clone_folder: c:\lab
-
-shallow_clone: true
-
-matrix: 
+matrix:
     fast_finish: true
 
-build: 
+build:
     parallel: true 
 
 configuration:
